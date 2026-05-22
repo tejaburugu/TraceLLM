@@ -1,0 +1,18 @@
+node_modules
+
+# Build output
+dist
+server/dist
+build
+
+# Local environment files
+.env
+.env.*
+
+# Coverage and logs
+coverage
+.next
+*.log
+
+# Misc
+.DS_Store
