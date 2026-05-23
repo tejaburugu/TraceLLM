@@ -8,6 +8,7 @@ const envSchema = z.object({
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().default("gpt-4o-mini"),
     DEFAULT_PROVIDER: z.enum(["openai", "local"]).default("local"),
+    DATABASE_URL: z.string().url().optional(),
     MAX_HISTORY_MESSAGES: z.coerce.number().int().positive().default(30),
     REQUEST_BODY_LIMIT: z.string().default("1mb")
 });

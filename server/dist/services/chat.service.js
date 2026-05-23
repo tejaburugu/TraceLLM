@@ -49,5 +49,32 @@ export class ChatService {
             usage: providerResponse.usage
         };
     }
+    async stream(input, callbacks) {
+        const conversation = await this.conversations.ensureConversation({
+            conversationId: input.conversationId,
+            sessionId: input.sessionId,
+            firstMessage: input.message,
+            provider: input.provider,
+            model: input.model
+        });
+        const userMessage = {
+            id: createId("msg"),
+            conversationId: conversation.id,
+            role: "user",
+            content: input.message,
+            createdAt: nowIso()
+        };
+        const providerName = input.provider ?? conversation.metadata.provider ?? env.DEFAULT_PROVIDER;
+        const model = input.model ?? conversation.metadata.model ?? env.OPENAI_MODEL;
+        const provider = this.providers.resolve(providerName);
+        const context = [...this.conversations.toContext(conversation), { role: "user", content: input.message }];
+        if (provider.stream) {
+            await provider.stream(context, { model }, callbacks);
+        }
+        else {
+            const providerResponse = await provider.complete(context, { model });
+            callbacks.onComplete(providerResponse);
+        }
+    }
 }
 //# sourceMappingURL=chat.service.js.map

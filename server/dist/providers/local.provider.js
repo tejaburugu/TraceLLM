@@ -1,25 +1,48 @@
 export class LocalProvider {
     name = "local";
     async complete(messages, options) {
+        const reply = this.buildReply(messages);
+        const inputText = messages.map((message) => message.content).join(" ");
+        return {
+            provider: this.name,
+            model: options.model,
+            content: reply,
+            usage: {
+                inputTokens: this.estimateTokens(inputText),
+                outputTokens: this.estimateTokens(reply),
+                totalTokens: this.estimateTokens(inputText) + this.estimateTokens(reply)
+            }
+        };
+    }
+    async stream(messages, options, callbacks) {
+        const reply = this.buildReply(messages);
+        const tokens = reply.match(/\S+\s*/g) ?? [reply];
+        let accumulated = "";
+        for (const token of tokens) {
+            await new Promise((resolve) => setTimeout(resolve, 25));
+            accumulated += token;
+            callbacks.onToken(token);
+        }
+        callbacks.onComplete({
+            provider: this.name,
+            model: options.model,
+            content: accumulated,
+            usage: {
+                inputTokens: this.estimateTokens(messages.map((message) => message.content).join(" ")),
+                outputTokens: this.estimateTokens(accumulated),
+                totalTokens: this.estimateTokens(messages.map((message) => message.content).join(" ")) + this.estimateTokens(accumulated)
+            }
+        });
+    }
+    buildReply(messages) {
         const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content ?? "";
         const priorTurns = messages.filter((message) => message.role !== "system").length;
-        const inputText = messages.map((message) => message.content).join(" ");
-        const content = [
+        return [
             `I received your message: "${lastUserMessage}".`,
             "",
             `This conversation currently has ${priorTurns} message${priorTurns === 1 ? "" : "s"} in context.`,
             "The provider interface is active, so switching to OpenAI only requires setting DEFAULT_PROVIDER=openai and OPENAI_API_KEY."
         ].join("\n");
-        return {
-            provider: this.name,
-            model: options.model,
-            content,
-            usage: {
-                inputTokens: this.estimateTokens(inputText),
-                outputTokens: this.estimateTokens(content),
-                totalTokens: this.estimateTokens(inputText) + this.estimateTokens(content)
-            }
-        };
     }
     estimateTokens(text) {
         return Math.max(1, Math.ceil(text.length / 4));

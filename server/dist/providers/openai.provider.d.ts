@@ -1,4 +1,4 @@
-import { LlmProvider, ProviderChatMessage } from "../types/chat.js";
+import { LlmProvider, ProviderChatMessage, ProviderStreamCallbacks } from "../types/chat.js";
 export declare class OpenAiProvider implements LlmProvider {
     readonly name = "openai";
     private readonly client?;
@@ -15,4 +15,7 @@ export declare class OpenAiProvider implements LlmProvider {
             totalTokens: number | undefined;
         };
     }>;
+    stream(messages: ProviderChatMessage[], options: {
+        model: string;
+    }, callbacks: ProviderStreamCallbacks): Promise<void>;
 }

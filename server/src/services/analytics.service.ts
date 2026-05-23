@@ -93,12 +93,12 @@ export class AnalyticsService {
       totalRequests,
       conversationCount: conversationGroups.length,
       averageLatencyMs: safeNumber(latencySummary._avg.latencyMs),
-      providerLatency: providerRows.map((row) => ({
+      providerLatency: providerRows.map((row : any) => ({
         provider: row.provider,
         averageLatencyMs: safeNumber(row._avg.latencyMs),
         requestCount: row._count._all
       })),
-      modelLatency: modelRows.map((row) => ({
+      modelLatency: modelRows.map((row : any) => ({
         model: row.model,
         averageLatencyMs: safeNumber(row._avg.latencyMs),
         requestCount: row._count._all
@@ -115,8 +115,8 @@ export class AnalyticsService {
       prisma.inferenceLog.groupBy({ by: ["provider"], where: { status: "error" }, _count: { _all: true } })
     ]);
 
-    const providerErrors = providerTotals.map((totalRow) => {
-      const errorRow = providerErrorTotals.find((row) => row.provider === totalRow.provider);
+    const providerErrors = providerTotals.map((totalRow : any) => {
+      const errorRow = providerErrorTotals.find((row : any) => row.provider === totalRow.provider);
       const errorCount = errorRow?._count._all ?? 0;
       const requestCount = totalRow._count._all;
       return {
@@ -132,7 +132,7 @@ export class AnalyticsService {
       totalErrors,
       errorRate: totalRequests > 0 ? totalErrors / totalRequests : 0,
       providerErrors,
-      statusCounts: statusCounts.map((row) => ({ status: row.status, count: row._count._all }))
+      statusCounts: statusCounts.map((row : any) => ({ status: row.status, count: row._count._all }))
     };
   }
 
@@ -157,14 +157,14 @@ export class AnalyticsService {
       totalInputTokens: safeNumber(usageSummary._sum.inputTokens),
       totalOutputTokens: safeNumber(usageSummary._sum.outputTokens),
       totalTokens: safeNumber(usageSummary._sum.totalTokens),
-      providerUsage: providerRows.map((row) => ({
+      providerUsage: providerRows.map((row : any) => ({
         provider: row.provider,
         inputTokens: safeNumber(row._sum.inputTokens),
         outputTokens: safeNumber(row._sum.outputTokens),
         totalTokens: safeNumber(row._sum.totalTokens),
         requestCount: row._count._all
       })),
-      modelUsage: modelRows.map((row) => ({
+      modelUsage: modelRows.map((row : any) => ({
         model: row.model,
         inputTokens: safeNumber(row._sum.inputTokens),
         outputTokens: safeNumber(row._sum.outputTokens),

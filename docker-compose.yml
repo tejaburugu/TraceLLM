@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   redis:
     image: redis:7-alpine
@@ -41,7 +41,7 @@ services:
       - postgres
       - redis
     ports:
-      - "4000:4000"
+      - "4001:4000"
 
   frontend:
     build:

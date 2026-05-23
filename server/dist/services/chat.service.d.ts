@@ -1,4 +1,4 @@
-import { ChatCompletionInput, ChatCompletionResult } from "../types/chat.js";
+import { ChatCompletionInput, ChatCompletionResult, ProviderStreamCallbacks } from "../types/chat.js";
 import { ConversationService } from "./conversation.service.js";
 import { ProviderRegistryService } from "./providerRegistry.service.js";
 export declare class ChatService {
@@ -6,4 +6,5 @@ export declare class ChatService {
     private readonly providers;
     constructor(conversations: ConversationService, providers: ProviderRegistryService);
     complete(input: ChatCompletionInput): Promise<ChatCompletionResult>;
+    stream(input: ChatCompletionInput, callbacks: ProviderStreamCallbacks): Promise<void>;
 }

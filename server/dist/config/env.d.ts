@@ -7,4 +7,5 @@ export declare const env: {
     MAX_HISTORY_MESSAGES: number;
     REQUEST_BODY_LIMIT: string;
     OPENAI_API_KEY?: string | undefined;
+    DATABASE_URL?: string | undefined;
 };

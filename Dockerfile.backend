@@ -1,15 +1,19 @@
-# Backend container for the Express API
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
+# Install OpenSSL compatibility packages
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 COPY package.json package-lock.json* ./
+
 RUN npm install
 
-# Copy source and build API
 COPY . .
+
+RUN npx prisma generate
 RUN npm run build:api
 
 EXPOSE 4000
-CMD ["npm", "run", "start:api"]
+
+CMD ["npm","run","start:api"]

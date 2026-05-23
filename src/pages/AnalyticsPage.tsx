@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, BarChart2, CircleDot, Waveform } from "lucide-react";
+import { ArrowLeft, BarChart2, CircleDot, Activity } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -127,7 +127,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
 
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
             <div className="mb-4 flex items-center gap-3">
-              <Waveform size={20} />
+              <Activity size={20} />
               <div>
                 <p className="text-sm font-semibold">Usage by provider</p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">Total token consumption per provider.</p>
@@ -173,7 +173,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
 
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
             <div className="mb-4 flex items-center gap-3">
-              <Waveform size={20} />
+              <Activity size={20} />
               <div>
                 <p className="text-sm font-semibold">Token usage by model</p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">Aggregated input/output token counts.</p>

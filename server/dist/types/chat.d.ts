@@ -46,9 +46,17 @@ export interface ProviderResponse {
     provider: string;
     usage?: TokenUsage;
 }
+export interface ProviderStreamCallbacks {
+    onToken: (token: string) => void;
+    onComplete: (response: ProviderResponse) => void;
+    onError?: (error: unknown) => void;
+}
 export interface LlmProvider {
     readonly name: string;
     complete(messages: ProviderChatMessage[], options: {
         model: string;
     }): Promise<ProviderResponse>;
+    stream?(messages: ProviderChatMessage[], options: {
+        model: string;
+    }, callbacks: ProviderStreamCallbacks): Promise<void>;
 }

@@ -4,4 +4,5 @@ export declare class ChatController {
     private readonly chat;
     constructor(chat: ChatService);
     create: (req: Request, res: Response) => Promise<void>;
+    stream: (req: Request, res: Response) => Promise<void>;
 }

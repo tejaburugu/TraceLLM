@@ -1,4 +1,4 @@
-import { LlmProvider, ProviderChatMessage } from "../types/chat.js";
+import { LlmProvider, ProviderChatMessage, ProviderStreamCallbacks } from "../types/chat.js";
 export declare class LocalProvider implements LlmProvider {
     readonly name = "local";
     complete(messages: ProviderChatMessage[], options: {
@@ -13,5 +13,9 @@ export declare class LocalProvider implements LlmProvider {
             totalTokens: number;
         };
     }>;
+    stream(messages: ProviderChatMessage[], options: {
+        model: string;
+    }, callbacks: ProviderStreamCallbacks): Promise<void>;
+    private buildReply;
     private estimateTokens;
 }

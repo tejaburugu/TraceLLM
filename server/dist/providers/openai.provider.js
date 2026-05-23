@@ -36,5 +36,51 @@ export class OpenAiProvider {
             }
         };
     }
+    async stream(messages, options, callbacks) {
+        if (!this.client) {
+            callbacks.onError?.(new HttpError(503, "OpenAI provider is not configured. Set OPENAI_API_KEY or use provider=local."));
+            return;
+        }
+        const response = await this.client.chat.completions.create({
+            model: options.model,
+            messages: messages.map((message) => ({ role: message.role, content: message.content })),
+            temperature: 0.7,
+            stream: true
+        });
+        let content = "";
+        let finalModel = options.model;
+        const usage = { inputTokens: undefined, outputTokens: undefined, totalTokens: undefined };
+        try {
+            for await (const event of response) {
+                const delta = event.choices?.[0]?.delta?.content;
+                if (delta) {
+                    content += delta;
+                    callbacks.onToken(delta);
+                }
+                if (event.model) {
+                    finalModel = event.model;
+                }
+                if (event.usage) {
+                    usage.inputTokens = event.usage.prompt_tokens ?? usage.inputTokens;
+                    usage.outputTokens = event.usage.completion_tokens ?? usage.outputTokens;
+                    usage.totalTokens = event.usage.total_tokens ?? usage.totalTokens;
+                }
+            }
+            callbacks.onComplete({
+                provider: this.name,
+                model: finalModel,
+                content,
+                usage: {
+                    inputTokens: usage.inputTokens,
+                    outputTokens: usage.outputTokens,
+                    totalTokens: usage.totalTokens
+                }
+            });
+        }
+        catch (error) {
+            callbacks.onError?.(error);
+            throw error;
+        }
+    }
 }
 //# sourceMappingURL=openai.provider.js.map
